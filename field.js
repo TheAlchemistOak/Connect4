@@ -59,9 +59,9 @@ function initField() {
 	let fieldStr = "";
 	
 	for(let i = 0; i < x; i++) {
-		fieldStr += "<div class=\"column\" onclick=\"play(" + i + ", room)\">";
+		fieldStr += '<div class="column" onclick="play(' + i + ', room)">';
 		for(let j = 0; j < y; j++) {
-			fieldStr += "<div id=\"" + i + "," + (y - 1 -j) + "\" class=\"cell\"></div>";
+			fieldStr += '<div id="' + i + ',' + (y - 1 -j) + '" class="cell"></div>';
 		}
 		fieldStr += "</div>";
 	}

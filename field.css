@@ -70,3 +70,7 @@ tr, td, table {
 #config-card {
     display: none;
 }
+
+#menu-card {
+    display: none;
+}

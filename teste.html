@@ -1,0 +1,24 @@
+<html>
+<head>
+    <title>Connect4</title>
+    <!-- <script type="text/javascript" src="ai.js"></script> -->
+    <script type="text/javascript" src="field.js"></script>
+    <!-- <script type="text/javascript" src="node.js"></script> -->
+    <link rel="stylesheet" type="text/css" href="field.css">
+</head>
+
+<body onload="initField(7,6)" style="background-color: black;">
+    <div id="game-title">
+        <table>
+            <th>Player1</th><th>Player2</th>
+        </table>
+    </div>
+    <div id="game-container">
+        <div id="field">
+        </div>
+        <div style="background-color: darkgray; height: 100%; width: 200px; display: inline-block;margin: auto;">
+            <textarea id="game-log" disabled style="height: inherit; width: inherit; resize: none;"></textarea>
+        </div>
+    </div>
+</body>
+</html>
