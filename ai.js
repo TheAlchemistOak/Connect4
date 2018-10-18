@@ -1,9 +1,7 @@
 const PLUS_INFINITE = 1000;
 const MINUS_INFINITE = -1000;
 
-const depthLimit = 4;
-
-
+const depthLimit = 5;
 
 function bestMoveAB(currentState) {
 	let children = currentState.makeDescendants();
@@ -14,6 +12,7 @@ function bestMoveAB(currentState) {
 		// debugger;
 		let temp = alphabeta(children[i], false, 1, MINUS_INFINITE, PLUS_INFINITE);
 		children[i].utility = temp;
+        console.log(temp);
 		if(max.compareTo(children[i]) < 0)
 			max = children[i];
 	}
@@ -33,10 +32,8 @@ function alphabeta(node, isMax, depth, alpha, beta) {
 		let best = MINUS_INFINITE;
 		let tempAux = node.makeDescendants();
 		for(let ci = 0; ci < tempAux.length; ci++) {
-
 			let v = alphabeta(tempAux[ci], false, depth + 1, alpha, beta);
 			// if(depth == 1)
-			// 	System.out.println("	" + v);
 			best = Math.max(best, v);
 			alpha = Math.max(best, alpha);
 			if(best >= beta) {
@@ -49,10 +46,8 @@ function alphabeta(node, isMax, depth, alpha, beta) {
 		let best = PLUS_INFINITE;
 		let tempAux = node.makeDescendants();
 		for(let ci = 0; ci < tempAux.length; ci++) {
-			// debugger;
 			let v = alphabeta(tempAux[ci], true, depth + 1, alpha, beta);
 			// if(depth == 1)
-			// 	System.out.println("	" + v);
 			best = Math.min(best, v);
 			beta = Math.min(best, beta);
 			if(best <= alpha) {
@@ -69,7 +64,6 @@ function utility(nodeCells, isMax, token, enemyToken) {
 	let count = 0;
 	let count2 = 0;
 	
-	// debugger;
 
 	for(let i = 0; i < nodeCells.length; i++) {
 		for(let j = 0; j < nodeCells[0].length; j++) {
@@ -231,21 +225,21 @@ function utility(nodeCells, isMax, token, enemyToken) {
 				count = 0;
 				count2 = 0;
 				
-				if(nodeCells[i][nodeCells.length - j] == token)
+				if(nodeCells[i][nodeCells[0].length - j-1] == token)
 					count++;
-				else if(nodeCells[i][nodeCells.length - j] == enemyToken)
+				else if(nodeCells[i][nodeCells[0].length - j-1] == enemyToken)
 					count2++;
-				if(nodeCells[i + 1][nodeCells.length - j - 1] == token)
+				if(nodeCells[i + 1][nodeCells[0].length - j-1 - 1] == token)
 					count++;
-				else if(nodeCells[i + 1][nodeCells.length - j - 1] == enemyToken)
+				else if(nodeCells[i + 1][nodeCells[0].length - j-1 - 1] == enemyToken)
 					count2++;
-				if(nodeCells[i + 2][nodeCells.length - j - 2] == token)
+				if(nodeCells[i + 2][nodeCells[0].length - j-1 - 2] == token)
 					count++;
-				else if(nodeCells[i + 2][nodeCells.length - j - 2] == enemyToken)
+				else if(nodeCells[i + 2][nodeCells[0].length - j-1 - 2] == enemyToken)
 					count2++;
-				if(nodeCells[i + 3][nodeCells.length - j - 3] == token)
+				if(nodeCells[i + 3][nodeCells[0].length - j-1 - 3] == token)
 					count++;
-				else if(nodeCells[i + 3][nodeCells.length - j - 3] == enemyToken)
+				else if(nodeCells[i + 3][nodeCells[0].length - j-1 - 3] == enemyToken)
 					count2++;
 				
 				if(count2 == 0) {

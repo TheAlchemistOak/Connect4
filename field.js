@@ -21,38 +21,20 @@ class Room {
 	}
 }
 
-function openCfg() {
-	document.getElementById("menu-card").style.display = "none";
-	document.getElementById("config-card").style.display = "block";
-}
-
 var room;
-// var room = {
-// 	gameover: false,
-// 	turn: true,
-// 	col_count: [0,0,0,0,0,0,0],
-// 	cells: [
-// 		['-','-','-','-','-','-','-'],
-// 		['-','-','-','-','-','-','-'],
-// 		['-','-','-','-','-','-','-'],
-// 		['-','-','-','-','-','-','-'],
-// 		['-','-','-','-','-','-','-'],
-// 		['-','-','-','-','-','-','-']
-// 	]
-// }
 
 function initField() {
 
 	let y = document.getElementById("row").value;
 	let x = document.getElementById("col").value;
-
+    
+    if(x > 15 || y > 15) {
+        aiBot = false;
+    }
+    
 	room = new Room(y,x);
 
-	{
-		document.getElementById("menu-card").style.display = "none";
-		document.getElementById("config-card").style.display = "none";
-		document.getElementById("game-card").style.display = "block";
-	}
+	flipCard('game-card');
 
 	let field = document.getElementById("field");
 
@@ -68,17 +50,15 @@ function initField() {
 	
 	
 	field.innerHTML = fieldStr;
+    
+    
+    if(x > 7) { //518
+        for(let i of document.getElementsByClassName("cell")) {
+            i.style.height = Number.parseInt(550/x) + "px";
+            i.style.width = Number.parseInt(550/x) + "px";
+        }
+    }
 	
-	let cellWH = (600-4*x)/x;
-	
-	if(cellWH > (600-4*y)/y)
-		cellWH = (600-4*y)/y;
-	
-	let cells_ = document.getElementsByClassName("cell");
-	for(let i = 0; i < cells_.length; i++) {
-		cells_[i].style.height = cellWH;
-		cells_[i].style.width = cellWH;
-	}
 }
 
 var aiBot = true;
@@ -90,15 +70,9 @@ function play(n, game) {
 	}
 	else {
 
-		// let gameLog = document.getElementById("game-log");
-
 		if((x = document.getElementById((n) + "," + (game.col_count[n]))) != null) { 
 			if(game.turn) {
-				// gameLog.value = gameLog.value + "Red plays: column "+n+"\n";
-				// gameLog.scrollTop = gameLog.scrollHeight;
 				x.style.backgroundColor = "#18BC9C";
-				// x.style.backgroundColor = "#FF0000";
-				// x.style.animationName = "turnRed";
 				game.cells[game.col_count[n]][n] = 'X';
 
 				if(aiBot)
@@ -106,11 +80,7 @@ function play(n, game) {
 
 			}
 			else {
-				// gameLog.value = gameLog.value + "Blue plays: column "+n+"\n";
-				// gameLog.scrollTop = gameLog.scrollHeight;
 				x.style.backgroundColor = "#2C3E50";
-				// x.style.backgroundColor = "#FFFF00";
-				// x.style.animationName = "turnBlue";
 				game.cells[game.col_count[n]][n] = 'O';
 
 				if(aiBot)
@@ -122,38 +92,32 @@ function play(n, game) {
 			let curr = isTerminal(game.cells);
 			// var curr = false;
 
-			// console.log(curr[1]);
-
 			game.gameover = curr[0];
 			let sequence = curr[1];
 
 			if(game.gameover) {
 
-				fd = document.getElementsByClassName("cell");
+				let fd = document.getElementsByClassName("cell");
 
 				for (let i = 0; i < fd.length; i++) {
 					fd[i].style.opacity = 0.2;
-					// fd[i].style.animationName = "partialFadeOut";
 				}
 
 				for (let i = 0; i < sequence.length; i++) {
 					temp = document.getElementById(sequence[i]);
-					// temp.style.borderColor = "yellow";
-					// temp.style.boxShadow = "0px 0px 50px grey";
 					temp.style.animationName = "winner"
 					temp.style.opacity = 1;
 				}
 
-				if(!game.turn) {
-					// gameLog.value = gameLog.value + "Red wins!\n";
-					// gameLog.scrollTop = gameLog.scrollHeight;
-					alert("Red wins!");
-				}
-				else {
-					// gameLog.value = gameLog.value + "Blue wins!\n";
-					// gameLog.scrollTop = gameLog.scrollHeight;
-					alert("Blue wins!");
-				}
+                
+                // debugger;
+                
+//                if(tie)
+//                    alert('Draw');
+				if(!game.turn) 
+                    alert("Red wins!");
+				else 
+                    alert("Blue wins!");
 			
 			}
 
@@ -169,6 +133,8 @@ function play(n, game) {
 	}
 
 }
+
+var tie = false;
 
 function isTerminal(cells) {
 
@@ -192,7 +158,6 @@ function isTerminal(cells) {
 						return [true, [j+","+(i), (j)+","+(i+1), (j)+","+(i+2), (j)+","+(i+3)]];
 					}
 				}
-				// if(i < 3 && j < 4) {
 				if(i < cells.length - 3 && j < (cells[0].length - 3)) {
 					if(cells[i][j] == cells[i + 1][j + 1] && 
 					   cells[i][j] == cells[i + 2][j + 2] && 
@@ -205,13 +170,14 @@ function isTerminal(cells) {
 			}
 			else
 				count++;
-			if(cells[i][cells.length - j] != '-') {
-				// if(j < 4 && i < 3)
-				if(j < (cells[0].length - 3) && i < 3)
-				if(cells[i][cells.length - j] == cells[i + 1][cells.length - j - 1] && 
-				   cells[i][cells.length - j] == cells[i + 2][cells.length - j - 2] && 
-				   cells[i][cells.length - j] == cells[i + 3][cells.length - j - 3]) {
-					return [true, [(cells.length-j)+","+i, (cells.length-j-1)+","+(i+1), (cells.length-j-2)+","+(i+2), (cells.length-j-3)+","+(i+3)]];
+//            debugger;
+			if(cells[i][cells[0].length - j - 1] != '-') {
+//                if(j < 4 && i < 3)
+				if(j < (cells[0].length - 3) && i < cells.length - 3)
+				if(cells[i][cells[0].length - j - 1] == cells[i + 1][cells[0].length - j - 1 - 1] && 
+				   cells[i][cells[0].length - j - 1] == cells[i + 2][cells[0].length - j - 1 - 2] && 
+				   cells[i][cells[0].length - j - 1] == cells[i + 3][cells[0].length - j - 1 - 3]) {
+					return [true, [(cells[0].length-j-1)+","+i, (cells[0].length-j-1-1)+","+(i+1), (cells[0].length-j-1-2)+","+(i+2), (cells[0].length-j-1-3)+","+(i+3)]];
 				}
 			}
 			else
