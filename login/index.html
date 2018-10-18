@@ -1,0 +1,68 @@
+<html>
+<head>
+    <title>Connect4</title>
+    <script type="text/javascript" src="node.js"></script>
+    <script type="text/javascript" src="ai.js"></script>
+    <script type="text/javascript" src="field.js"></script>
+    <link rel="stylesheet" type="text/css" href="field.css">
+    <link rel="stylesheet" type="text/css" href="menu.css">
+    <!-- <link rel="stylesheet" type="text/css" href="mobile.css" media="handheld"/> -->
+    <link rel="stylesheet" type="text/css" href="mobile.css" media="screen and (min-width: 200px) and (max-width: 400px)"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+</head>
+
+<body style="background-color: black;">
+    <div id="login-card">
+        <div id="menu-frame">
+            <div class="menu-title">Login</div>
+            <div id="fieldSize">
+                    <input id="login_user_name" type="text" placeholder="Login">
+                    <br>
+                    <input id="login_password"  type="password" placeholder="Password">
+            </div>
+            <div id="btn1" class="g-button" onclick="initField()">Play</div>
+        </div>
+    </div>
+    
+    <div id="menu-card">
+        <div id="menu-frame">
+            <div class="menu-title">Connect4</div>
+            <div id="btn1" class="g-button" onclick="openCfg()">Config</div>
+            <div id="btn2" class="g-button g-button-tutorial" >Tutorial <h4>4 em linha:</h4>
+<p style="font-size: 0.5em">Posição inicial e objectivo do jogo
+
+O 4 em linha pertence a uma série de jogos populares pois facilmente se aprendem as suas regras simples e o jogo consegue entreter os jogadores durante bastante tempo. O objectivo deste jogo é colocar quatro peças numa linha contínua vertical, horizontal ou diagonalmente. O jogo desenrola-se num tabuleiro quadrado de 6x7 e começa com o tabuleiro em branco.</p></div>
+            <div id="btn3" class="g-button">Btn3</div>
+        </div>
+    </div>
+
+    <div id="config-card">
+        <div id="menu-frame">
+            <div class="menu-title">Connect4</div>
+            <form id="fieldSize">
+                <table style="margin: auto">
+                    <tr><td style="color: black">#Row: </td><td><input id="row" type="number" name="row" min="4" value="6"></td></tr>
+                    <tr><td style="color: black">#Col: </td><td><input id="col" type="number" name="col" min="4" value="7"></td></tr>
+                </table>
+            </form>
+            <div id="btn1" class="g-button" onclick="initField()">Play</div>
+        </div>
+    </div>
+
+    <div id="game-card">
+        <div id="game-title">
+            <table>
+                <tr><td><th>Player1: <div class="player-color" style="background-color: #18BC9C"></div></th></td><td><th>Computer: <div class="player-color" style="background-color: #2C3E50"></div></th></td><tr>
+            </table>
+        </div>
+        <div id="game-container">
+            <div id="field">
+            </div>
+            <!-- <div style="background-color: darkgray; height: 100%; width: 200px; display: inline-block;margin: auto;">
+                <textarea id="game-log" disabled style="height: inherit; width: inherit; resize: none;"></textarea>
+            </div> -->
+        </div>
+    </div>
+
+</body>
+</html>
