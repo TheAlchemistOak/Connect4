@@ -9,12 +9,10 @@
     <script src="menu.js"></script>
     <link rel="stylesheet" type="text/css" href="field.css">
     <link rel="stylesheet" type="text/css" href="menu.css">
-    <!-- <link rel="stylesheet" type="text/css" href="mobile.css" media="handheld"/> -->
     <link rel="stylesheet" type="text/css" href="mobile.css" media="screen and (min-width: 200px) and (max-width: 400px)"/>
-<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />-->
 </head>
 
-<body style="background-color: black;">
+<body>
 <!--
     <div id="login-card">
         <div class="menu-frame">
@@ -44,11 +42,14 @@
         <div class="menu-frame">
             <div class="menu-title">Connect4</div>
                 <div id="field-size">
-                <input id="row" placeholder="Row" value="6">
-                <br>
-                <input id="col" placeholder="Column" value="7">
-                <br>
+                <input id="row" placeholder="Row" value="6"><br>
+                <input id="col" placeholder="Column" value="7"><br>
+                <input id="vsBot" name="vsB" type="radio" checked>vsBot<br>
+                <input name="vsB" type="radio" value="VsHuman">vsHuman<br>
+                <input id="first" name="fi" type="radio" checked>Play First<br>
+                <input name="fi" type="radio">Play Second
                 </div>
+            
             <div id="playbtn" class="g-button" onclick="fakeStart()">Play</div>
         </div>
     </div>
@@ -68,6 +69,7 @@
     <div id="pop-up-card" class="card">
         <div class="menu-frame game-pop-up">
             <div class="menu-title">Game Over</div>
+            <div id="end-game" class="menu-title"></div>
             <div class="g-button pop-up-btn" onclick="initField()">Play Again</div>
             <div class="g-button pop-up-btn" onclick="flipCard('menu-card')">Back to Menu</div>
         </div>

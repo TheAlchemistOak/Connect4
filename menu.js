@@ -19,10 +19,12 @@ function flipCard(name) {
         for(let i of temp) {
             i.style.display = "none";
         }
-    else
+    else {
         room.gameover = true;
+    }
 
     temp[name].style.display = "block";
+    temp[name].style.opacity = 1;
 
 }
 

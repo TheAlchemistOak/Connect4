@@ -1,9 +1,10 @@
 class Room {
-	constructor(n_rows, n_cols) {
+	constructor(n_rows, n_cols, vsBot, playFirst) {
 		this.gameover = false;
-		this.turn = true;
+		this.turn = playFirst;
 		this.n_rows = n_rows;
 		this.n_cols = n_cols;
+		this.vsBot = vsBot;
 		this.setupCells();
 	}
 
@@ -29,10 +30,10 @@ function initField() {
 	let x = document.getElementById("col").value;
     
     if(x > 15 || y > 15) {
-        aiBot = false;
+        room.vsBot = false;
     }
     
-	room = new Room(y,x);
+	room = new Room(y,x, document.getElementById("vsBot").checked, document.getElementById("first").checked);
 
 	flipCard('game-card');
 
@@ -58,39 +59,48 @@ function initField() {
             i.style.width = Number.parseInt(550/x) + "px";
         }
     }
-	
+
+    if(!room.turn && room.vsBot) 
+		play(0, room);
 }
 
-var aiBot = true;
-var aiTurn = false;
 
+/**
+ * Make the move
+ * 
+ * @param {number} n Column number
+ * @param {Room} game The active room
+ */
 function play(n, game) {
 	if(game.gameover) {
-		// alert("The game is over");
+		let endGame = document.getElementById("end-game");
+        if(!game.turn)
+            endGame.innerHTML = "Player wins!";
+        else
+            endGame.innerHTML = "Computer wins!";
+        flipCard('pop-up-card');
+
 	}
 	else {
+
+		if(!game.turn && game.vsBot) {
+			let bestMove = bestMoveAB(new Node(game.cells, true, game.col_count, 1, 8, 'O')).move;
+			n = bestMove;
+		}
 
 		if((x = document.getElementById((n) + "," + (game.col_count[n]))) != null) { 
 			if(game.turn) {
 				x.style.backgroundColor = "#18BC9C";
 				game.cells[game.col_count[n]][n] = 'X';
-
-				if(aiBot)
-					aiTurn = true;
-
 			}
 			else {
 				x.style.backgroundColor = "#2C3E50";
 				game.cells[game.col_count[n]][n] = 'O';
-
-				if(aiBot)
-					aiTurn = false;
 			}
 			game.col_count[n]++;
 			game.turn = !game.turn;
 
 			let curr = isTerminal(game.cells);
-			// var curr = false;
 
 			game.gameover = curr[0];
 			let sequence = curr[1];
@@ -99,25 +109,22 @@ function play(n, game) {
 
 				let fd = document.getElementsByClassName("cell");
 
-				for (let i = 0; i < fd.length; i++) {
-					fd[i].style.opacity = 0.2;
+				for (let i of fd) {
+					i.style.opacity = 0.2;
 				}
 
-				for (let i = 0; i < sequence.length; i++) {
-					temp = document.getElementById(sequence[i]);
+				for (let i of sequence) {
+					temp = document.getElementById(i);
 					temp.style.animationName = "winner"
 					temp.style.opacity = 1;
 				}
-
-                
-                // debugger;
                 
 //                if(tie)
 //                    alert('Draw');
-				if(!game.turn) 
-                    alert("Red wins!");
-				else 
-                    alert("Blue wins!");
+//				if(!game.turn) 
+//                    alert("Red wins!");
+//				else 
+//                    alert("Blue wins!");
 			
 			}
 
@@ -125,17 +132,24 @@ function play(n, game) {
 		else {
 			alert("Invalid play");
 		}
-	}
 
-	if(aiTurn) {
-		let bestMove = bestMoveAB(new Node(game.cells, true, game.col_count, 1, 8, 'O')).move;
-		play(bestMove, game);
+		if(!game.turn && game.vsBot) {
+			let bestMove = bestMoveAB(new Node(game.cells, true, game.col_count, 1, 8, 'O')).move;
+			play(bestMove, game);
+		}
 	}
-
+	
 }
+
 
 var tie = false;
 
+
+/**
+ *
+ * @param {number}
+ * @return {number}
+ */
 function isTerminal(cells) {
 
 	let count = 0;
@@ -143,7 +157,6 @@ function isTerminal(cells) {
 	for(let i = 0; i < cells.length; i++) { 
 		for(let j = 0; j < cells[0].length; j++) { 
 			if(cells[i][j] != '-') {
-				// if(j < 4) {
 				if(j < (cells[0].length - 3)) {
 					if(cells[i][j] == cells[i][j + 1] && 
 					   cells[i][j] == cells[i][j + 2] && 
@@ -170,9 +183,8 @@ function isTerminal(cells) {
 			}
 			else
 				count++;
-//            debugger;
+
 			if(cells[i][cells[0].length - j - 1] != '-') {
-//                if(j < 4 && i < 3)
 				if(j < (cells[0].length - 3) && i < cells.length - 3)
 				if(cells[i][cells[0].length - j - 1] == cells[i + 1][cells[0].length - j - 1 - 1] && 
 				   cells[i][cells[0].length - j - 1] == cells[i + 2][cells[0].length - j - 1 - 2] && 
@@ -184,7 +196,9 @@ function isTerminal(cells) {
 				count++;
 		}
 	}
-		
+	
+	debugger;
+
 	if(count == 0) {
 		tie = true;
 		return [true, []];
