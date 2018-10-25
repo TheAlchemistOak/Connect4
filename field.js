@@ -6,9 +6,11 @@ class Room {
 		this.n_cols = n_cols;
 		this.vsBot = vsBot;
 		this.setupCells();
+		this.isDraw = false;
 	}
 
 	setupCells() {
+		// this.col_count = {};
 		this.col_count = new Array();
 		for(let i = 0; i < this.n_cols; i++)
 			this.col_count.push(0);
@@ -60,8 +62,10 @@ function initField() {
         }
     }
 
-    if(!room.turn && room.vsBot) 
-		play(0, room);
+    if(!room.turn && room.vsBot) {
+    	let bestMove = bestMoveAB(new Node(room.cells, true, room.col_count, 1, 8, 'O')).move;
+		play(bestMove, room);
+    }
 }
 
 
@@ -74,7 +78,10 @@ function initField() {
 function play(n, game) {
 	if(game.gameover) {
 		let endGame = document.getElementById("end-game");
-        if(!game.turn)
+		if(game.isDraw) {
+            endGame.innerHTML = "Draw!";
+		}
+        else if(!game.turn)
             endGame.innerHTML = "Player wins!";
         else
             endGame.innerHTML = "Computer wins!";
@@ -83,10 +90,12 @@ function play(n, game) {
 	}
 	else {
 
-		if(!game.turn && game.vsBot) {
-			let bestMove = bestMoveAB(new Node(game.cells, true, game.col_count, 1, 8, 'O')).move;
-			n = bestMove;
-		}
+		// if(!game.turn && game.vsBot) {
+		// 	let bestMove = bestMoveAB(new Node(game.cells, true, game.col_count, 1, 8, 'O')).move;
+		// 	n = bestMove;
+		// }
+		// if(!(n in game.col_count))
+		// 	game.col_count[n] = 0;
 
 		if((x = document.getElementById((n) + "," + (game.col_count[n]))) != null) { 
 			if(game.turn) {
@@ -100,6 +109,7 @@ function play(n, game) {
 			game.col_count[n]++;
 			game.turn = !game.turn;
 
+			// let curr = isTerminal(game.cells, game.col_count);
 			let curr = isTerminal(game.cells);
 
 			game.gameover = curr[0];
@@ -118,13 +128,6 @@ function play(n, game) {
 					temp.style.animationName = "winner"
 					temp.style.opacity = 1;
 				}
-                
-//                if(tie)
-//                    alert('Draw');
-//				if(!game.turn) 
-//                    alert("Red wins!");
-//				else 
-//                    alert("Blue wins!");
 			
 			}
 
@@ -142,57 +145,54 @@ function play(n, game) {
 }
 
 
-var tie = false;
-
-
 /**
  *
  * @param {number}
  * @return {number}
  */
-function isTerminal(cells) {
+function isTerminal(cells, cols) {
 
 	let count = 0;
 
-	for(let i = 0; i < cells.length; i++) { 
+	debugger;
+ 
+	for(let i = 0; i < cells.length; i++) {
 		for(let j = 0; j < cells[0].length; j++) { 
-			if(cells[i][j] != '-') {
+		// for(let j = 0; cells[i][j]!='-'; j++) { 
+			
 				if(j < (cells[0].length - 3)) {
-					if(cells[i][j] == cells[i][j + 1] && 
-					   cells[i][j] == cells[i][j + 2] && 
+					if(cells[i][j] == cells[i][j + 1] & 
+					   cells[i][j] == cells[i][j + 2] & 
 					   cells[i][j] == cells[i][j + 3]) {
 						return [true, [j+","+i, (j+1)+","+i, (j+2)+","+i, (j+3)+","+i]];
 					}
 				}
 				if(i < cells.length - 3) {
-					if(cells[i][j] == cells[i + 1][j] && 
-					   cells[i][j] == cells[i + 2][j] && 
+					if(cells[i][j] == cells[i + 1][j] & 
+					   cells[i][j] == cells[i + 2][j] & 
 					   cells[i][j] == cells[i + 3][j]) {
 						return [true, [j+","+(i), (j)+","+(i+1), (j)+","+(i+2), (j)+","+(i+3)]];
 					}
 				}
-				if(i < cells.length - 3 && j < (cells[0].length - 3)) {
-					if(cells[i][j] == cells[i + 1][j + 1] && 
-					   cells[i][j] == cells[i + 2][j + 2] && 
+				if(i < cells.length - 3 & j < (cells[0].length - 3)) {
+					if(cells[i][j] == cells[i + 1][j + 1] & 
+					   cells[i][j] == cells[i + 2][j + 2] & 
 					   cells[i][j] == cells[i + 3][j + 3]) {
 						return [true, [j+","+i, (j+1)+","+(i+1), (j+2)+","+(i+2), (j+3)+","+(i+3)]];
+					}
+				}
+
+				if(i >= 3 & j < (cells[0].length - 3)) {
+					if(cells[i][j] == cells[i - 1][j + 1] & 
+					   cells[i][j] == cells[i - 2][j + 2] & 
+					   cells[i][j] == cells[i - 3][j + 3]) {
+						return [true, [j+","+i, (j+1)+","+(i-1), (j+2)+","+(i-2), (j+3)+","+(i-3)]];
 					}
 
 					
 				}
-			}
-			else
-				count++;
-
-			if(cells[i][cells[0].length - j - 1] != '-') {
-				if(j < (cells[0].length - 3) && i < cells.length - 3)
-				if(cells[i][cells[0].length - j - 1] == cells[i + 1][cells[0].length - j - 1 - 1] && 
-				   cells[i][cells[0].length - j - 1] == cells[i + 2][cells[0].length - j - 1 - 2] && 
-				   cells[i][cells[0].length - j - 1] == cells[i + 3][cells[0].length - j - 1 - 3]) {
-					return [true, [(cells[0].length-j-1)+","+i, (cells[0].length-j-1-1)+","+(i+1), (cells[0].length-j-1-2)+","+(i+2), (cells[0].length-j-1-3)+","+(i+3)]];
-				}
-			}
-			else
+			
+			
 				count++;
 		}
 	}
@@ -200,9 +200,11 @@ function isTerminal(cells) {
 	debugger;
 
 	if(count == 0) {
-		tie = true;
+		room.isDraw = true;
 		return [true, []];
 	}
+
+	console.log(count);
 		
 	return [false, []];
 

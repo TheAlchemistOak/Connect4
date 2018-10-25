@@ -4,6 +4,7 @@ const MINUS_INFINITE = -1000;
 const depthLimit = 5;
 
 function bestMoveAB(currentState) {
+	t0 = (new Date()).getTime();
 	let children = currentState.makeDescendants();
 	// debugger;
 	let max = children[0];
@@ -17,12 +18,14 @@ function bestMoveAB(currentState) {
 			max = children[i];
 	}
 	
+	console.log('Took: ' + ((new Date()).getTime() - t0) );
 	return max;
 	
 }
 
 function alphabeta(node, isMax, depth, alpha, beta) {
 	// debugger;
+	// let boolVal = isTerminal(node.cells, node.slots)[0];
 	let boolVal = isTerminal(node.cells)[0];
 	// debugger;
 	if(boolVal || (depth == depthLimit))
